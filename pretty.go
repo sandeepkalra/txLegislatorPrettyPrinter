@@ -136,7 +136,7 @@ func main() {
 	chapters := strings.Split(inps, "SUBCHAPTER")
 	for _, chapContent := range chapters {
 		sections := strings.Split(chapContent, sectionName)
-		for _, ssectionName)ecCont := range sections {
+		for _, secCont := range sections {
 			sectionFull := sectionName
 			fmt.Print("\n")
 			sectLines := strings.Split(secCont, "\n")
