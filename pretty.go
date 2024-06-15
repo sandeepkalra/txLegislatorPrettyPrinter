@@ -29,14 +29,14 @@ func prettySection(in string) string {
 	found := false
 	const max = math.MaxInt32
 	exprs := map[string]int{
-		`:\n\([a-z]-[0-9]\) `: max,
-		`:\n\([A-Z]\) `:       max,
-		`:\n\([A-Z]-[0-9]\) `: max,
-		`:\n\([a-z])\) `:      max,
-		`:\n\([0-9]\) `:       max,
-		`:\n\([0-9]-[a-z]\) `: max,
-		`:\n\([0-9]-[A-Z]\) `: max,
-		`:\n\([i|x|v]+\) `:    max,
+		`:\n\([a-z]-[0-9]+\) `: max,
+		`:\n\([A-Z]\) `:        max,
+		`:\n\([A-Z]-[0-9]+\) `: max,
+		`:\n\([a-z])\) `:       max,
+		`:\n\([0-9]+\) `:       max,
+		`:\n\([0-9]+-[a-z]\) `: max,
+		`:\n\([0-9]+-[A-Z]\) `: max,
+		`:\n\([i|x|v]+\) `:     max,
 	}
 	for exp := range exprs {
 		b, e := regexp.MatchString(exp, in)
