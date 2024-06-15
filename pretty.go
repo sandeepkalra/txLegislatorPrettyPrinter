@@ -130,10 +130,8 @@ func prettySection(in string) string {
 			}
 			if !printed {
 				// case where Section has (a) in it, and not in new line
-				b1 := strings.Contains(l, sectionName)
-				b2 := strings.Contains(l, " (a)")
-				if b1 && b2 {
-					lSplit := strings.Split(l, "  (a)")
+				if strings.Contains(l, sectionName) && strings.Contains(l, " (a)") {
+					lSplit := strings.Split(l, " (a)")
 					fmt.Println(lSplit[0])
 					fmt.Println("(a)", lSplit[1])
 				} else {
