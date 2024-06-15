@@ -29,6 +29,8 @@ func prettySection(in string) string {
 		`:\n\([A-Z]-[0-9]\) `: max,
 		`:\n\([a-z])\) `:      max,
 		`:\n\([0-9]\) `:       max,
+		`:\n\([0-9]-[a-z]\) `: max,
+		`:\n\([0-9]-[A-Z]\) `: max,
 		`:\n\([i|x|v]+\) `:    max,
 	}
 	for exp := range exprs {
@@ -92,7 +94,9 @@ func prettySection(in string) string {
 			}
 		*/
 		inp := strings.Split(in, "\n")
+
 		for _, l := range inp {
+			printed := false
 			for xpr, spc := range newExpr {
 				s := ""
 				for i := 0; i < spc; i++ {
@@ -100,9 +104,11 @@ func prettySection(in string) string {
 				}
 				r, _ := regexp.Compile(xpr)
 				if r.Match([]byte(l)) {
-					fmt.Printf("%v%v", s, l)
+					fmt.Printf("%v%v\n", s, l)
+					printed = true
 				}
-
+			}
+			if !printed {
 				fmt.Println(l)
 			}
 		}
