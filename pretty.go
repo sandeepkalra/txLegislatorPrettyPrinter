@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	in          = os.Getenv("IN")
+	inT         = os.Getenv("IN")
 	sectionName = os.Getenv("SECT")
 )
 
@@ -29,14 +29,14 @@ func prettySection(in string) string {
 	found := false
 	const max = math.MaxInt32
 	exprs := map[string]int{
-		`:\n\([a-z]-[0-9]+\) `: max,
-		`:\n\([A-Z]\) `:        max,
-		`:\n\([A-Z]-[0-9]+\) `: max,
-		`:\n\([a-z])\) `:       max,
-		`:\n\([0-9]+\) `:       max,
-		`:\n\([0-9]+-[a-z]\) `: max,
-		`:\n\([0-9]+-[A-Z]\) `: max,
-		`:\n\([i|x|v]+\) `:     max,
+		`\n\([a-z]-[0-9]\) `: max,
+		`\n\([A-Z]-[0-9]\) `: max,
+		`\n\([0-9]-[a-z]\) `: max,
+		`\n\([0-9]-[A-Z]\) `: max,
+		`\n\([i|x|v]+\) `:    max,
+		`\n\([a-z])\) `:      max,
+		`\n\([A-Z]\) `:       max,
+		`\n\([0-9]+\) `:      max,
 	}
 	for exp := range exprs {
 		b, e := regexp.MatchString(exp, in)
@@ -84,9 +84,13 @@ func prettySection(in string) string {
 			for exp, vLoc := range exprs {
 				if vLoc == lo && exp != "" {
 					//				fmt.Println("debug: ", exp, lo)
-					if arr := strings.Split(exp, `:\n`); len(arr) > 1 {
+					if arr := strings.Split(exp, `\n`); len(arr) > 1 {
 						ss := arr[1]
-						newExpr[ss] = k + 1 // k is number of spaces that are needed
+						if strings.Contains(ss, "]-[") {
+							newExpr[ss] = k // all dash cases are at same level as prev.
+						} else {
+							newExpr[ss] = k + 1 // k is number of spaces that are needed
+						}
 					} else {
 						fmt.Println("error: ", arr)
 					}
@@ -104,31 +108,52 @@ func prettySection(in string) string {
 			printed := false
 			for xpr, spc := range newExpr {
 				s := ""
-				for i := 0; i < spc; i++ {
-					s += "  "
+				switch spc {
+				default: // md file can be generated too
+					s = "-" // #
+				case 1:
+					s = " " // ##
+				case 2:
+					s = "  " // ###
+				case 3:
+					s = "   " // -
+				case 4:
+					s = "    " // --
 				}
 				r, _ := regexp.Compile(xpr)
+
 				if r.Match([]byte(l)) {
+					//fmt.Println(r.ReplaceAllString(l, s))
 					fmt.Printf("%v%v\n", s, l)
 					printed = true
 				}
 			}
 			if !printed {
-				fmt.Println(l)
-			}
+				// case where Section has (a) in it, and not in new line
+				b1 := strings.Contains(l, sectionName)
+				b2 := strings.Contains(l, " (a)")
+				if b1 && b2 {
+					lSplit := strings.Split(l, "  (a)")
+					fmt.Println(lSplit[0])
+					fmt.Println("(a)", lSplit[1])
+				} else {
+					fmt.Println(l)
+				}
+			} // !printed
+
 		}
 	}
 	return in
 }
 
 func main() {
-	if in == "" {
-		in = "tx1101"
+	if inT == "" {
+		inT = "tx1101"
 	}
 	if sectionName == "" {
 		sectionName = "Sec. 1101."
 	}
-	inf, e := os.ReadFile(in + ".txt")
+	inf, e := os.ReadFile(inT + ".txt")
 	if e != nil {
 		log.Fatal("failed to read file")
 	}
