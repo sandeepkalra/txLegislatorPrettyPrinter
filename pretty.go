@@ -72,18 +72,9 @@ func prettySection(in string) string {
 		sort.Slice(locations, func(i, j int) bool {
 			return locations[i] < locations[j]
 		})
-		/*
-			for _, l := range locations {
-				fmt.Println("debug:", l)
-			}
-			for xpr, vLoc := range exprs {
-				fmt.Println("debug:", xpr, vLoc)
-			}
-		*/
 		for k, lo := range locations {
 			for exp, vLoc := range exprs {
 				if vLoc == lo && exp != "" {
-					//				fmt.Println("debug: ", exp, lo)
 					if arr := strings.Split(exp, `\n`); len(arr) > 1 {
 						ss := arr[1]
 						if strings.Contains(ss, "]-[") {
@@ -97,11 +88,6 @@ func prettySection(in string) string {
 				}
 			}
 		}
-		/*
-			for xpr, v := range newExpr {
-				fmt.Println("found:", xpr, "space :", v)
-			}
-		*/
 		inp := strings.Split(in, "\n")
 
 		for _, l := range inp {
@@ -123,7 +109,6 @@ func prettySection(in string) string {
 				r, _ := regexp.Compile(xpr)
 
 				if r.Match([]byte(l)) {
-					//fmt.Println(r.ReplaceAllString(l, s))
 					fmt.Printf("%v%v\n", s, l)
 					printed = true
 				}
